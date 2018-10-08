@@ -121,6 +121,8 @@ int main(void){
     AD1CON2 = 0;
     AD1CON1SET = 0x8000;
     red = 0;
+    
+    double tempK;
     while(1)
     {
         AD1CON1SET = 0x0002;
@@ -145,7 +147,13 @@ int main(void){
             green = 1;
             //uart_sendChar('0');
         }
-        uart_sendIntCharArray(ADCValue);
+        char str[25];
+        
+        
+        tempK = log(10000.0 * ((1024.0 / ADCValue - 1)));
+        tempK = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * tempK * tempK )) * tempK );
+        sprintf(str, "Temperature: %.2f C", tempK-273.15);
+        uart_sendCharArr(str);
         delay(1000000);
     }
     
