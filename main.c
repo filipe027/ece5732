@@ -43,9 +43,12 @@
 // Use project enums instead of #define for ON and OFF.
 
 #include <xc.h>
-#include<stdint.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <math.h>
+
 
 #define yellow LATEbits.LATE0
 #define red LATEbits.LATE1
@@ -56,6 +59,9 @@
 
 char uart_readChar(void);
 void uart_sendChar(char c);
+char* toArray(int number);
+void uart_sendIntCharArray(int number);
+void uart_sendCharArr(char arr[]);
 
 void delay(int);
 uint32_t count8(uint32_t* x);
@@ -130,16 +136,19 @@ int main(void){
             red = 1;
             white = 1;
             green = 1;
-            uart_sendChar('1');
+            //uart_sendChar('1');
         }
         else{
             yellow = 1;
             red = 0;
             white = 1;
             green = 1;
-            uart_sendChar('0');
+            //uart_sendChar('0');
         }
+        uart_sendIntCharArray(ADCValue);
+        delay(1000000);
     }
+    
     
 }
 
@@ -156,4 +165,27 @@ uint32_t count8(uint32_t* x){
         (*x)++;
     }
     return (~(*x) & 0x000F);
+}
+
+void uart_sendIntCharArray(int number)
+{
+    // Figures out how many digits there are in a integer number.
+    // OBS: log10 not working
+    int n = 1;    
+    while((number % (int)pow(10,n)) !=  number) 
+        n++;
+    
+    int i;
+    
+    char numArr[n+1];
+    numArr[n] = '\0';
+    for ( i = 0; i < n; ++i, number /= 10 ) // Divides the number by 10
+    {
+        numArr[(n-1) - i] = (number % 10) + '0'; // %10 gives the last digit
+        // +'0' transforms a int number into a char number
+    }
+    
+    uart_sendCharArr(numArr);// send char number array
+    
+    
 }
