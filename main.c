@@ -127,31 +127,33 @@ int main(void){
     {
         AD1CON1SET = 0x0002;
         delay(100000);
-        white = 0;
+        
         AD1CON1CLR = 0x0002;
         while(!(AD1CON1 & 0x0001));
-        green = 0;
+        
         ADCValue = ADC1BUF0;
         
-        if(ADCValue >500){
-            yellow = 0;
-            red = 1;
+        
+        char str[25];
+        
+        
+        tempK = log(10000.0 * ((1024.0 / ADCValue - 1)));
+        tempK = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * tempK * tempK )) * tempK );
+        
+        if(tempK-273.15f>28.0f){
+            yellow = 1;
+            red = 0;
             white = 1;
             green = 1;
             //uart_sendChar('1');
         }
         else{
             yellow = 1;
-            red = 0;
+            red = 1;
             white = 1;
-            green = 1;
-            //uart_sendChar('0');
+            green = 0;
         }
-        char str[25];
         
-        
-        tempK = log(10000.0 * ((1024.0 / ADCValue - 1)));
-        tempK = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * tempK * tempK )) * tempK );
         sprintf(str, "Temperature: %.2f C", tempK-273.15);
         uart_sendCharArr(str);
         delay(1000000);
