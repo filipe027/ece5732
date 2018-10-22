@@ -107,6 +107,8 @@ void setUart(){
         }
 
      }*/
+
+/* ADC UART
 int main(void){
     setUart();
     
@@ -160,7 +162,19 @@ int main(void){
     }
     
     
-}
+}*/
+
+/*
+int main (void){
+    setUart();
+    while(1){
+        uart_sendCharArr("Tem que mudar isso ai\n");
+        delay(1000000);
+        
+    }
+    
+    
+}*/
 
 
 
